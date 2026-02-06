@@ -4,12 +4,7 @@ version = "0.1.0"
 edition = "2021"
 description = "no_std GPIO port abstraction for AVR (ATmega328P): Port B, C, D with DDR/PORT/PIN register access"
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/dev-jeb/avr-port"
+repository = "https://github.com/dev-jeb/avr-and-things"
 documentation = "https://docs.rs/avr-port"
 keywords = ["avr", "embedded", "gpio", "atmega328p", "no_std"]
 categories = ["embedded", "no-std"]
-
-[package.metadata.docs.rs]
-targets = []
-
-[dependencies]
