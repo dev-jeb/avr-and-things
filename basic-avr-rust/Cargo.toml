@@ -1,0 +1,15 @@
+[package]
+name = "basic-avr-rust"
+version = "0.1.0"
+authors = ["dev_jeb <developer_jeb@outlook.com>"]
+edition = "2024"
+
+[profile.dev]
+panic = "abort"
+debug = true
+opt-level = 0
+
+[profile.release]
+panic = "abort"
+opt-level = 3
+debug = false
