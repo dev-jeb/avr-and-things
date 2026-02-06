@@ -1,25 +1,15 @@
-// src/port.rs
+//! no_std GPIO port abstraction for AVR (ATmega328P).
+//!
+//! Use Port B, C, and D via DDR/PORT/PIN registers:
+//! - `PORTx`: data register (read/write)
+//! - `DDRx`: data direction register (read/write)
+//! - `PINx`: input pins (read only)
 
-#![allow(dead_code)]
-
-/*
-    Here will be a module we can use to interact with the different Ports (Port B, Port C and Port D) of the atmega328p.
-
-    Port: A general I/O port (GPIO — General Purpose Input/Output) is a pin (or set of pins) that the microcontroller can configure as either an input or an output. As output, the MCU drives the pin to a logic level (usually VCC = high or GND = low). In output mode the pin can act like a voltage source (or sink). As input, the MCU reads the voltage on the pin (high or low).
-
-    Each Port on the atmega328p has three I/O registers associated to it.
-
-    PORTx: data register (read/write)
-    DDRx: data direction register (read/write)
-    PINx: input pins (read only)
-
-    THe DDxn (x = port (A,B,C), n = bit )
-
-    Pull-ups: When a pin is configured as input and the internal pull-up is disabled, the pin is floating—its voltage is undefined, so reads can give high or low at different times. Enabling the pull-up resistor ties the pin weakly to VCC, so you get a stable logic high when nothing is actively pulling the pin low (e.g. an open switch to GND).
-*/
+#![no_std]
 
 use core::ptr::{read_volatile, write_volatile};
 
+/// A single AVR I/O port (DDR, PORT, PIN registers).
 pub struct Port {
     ddr: *mut u8,
     port: *mut u8,
@@ -27,6 +17,7 @@ pub struct Port {
 }
 
 impl Port {
+    /// Creates a port from register addresses. Unsafe: addresses must be valid for the target MCU.
     pub unsafe fn new(ddr_addr: u16, port_addr: u16, pin_addr: u16) -> Self {
         Port {
             ddr: ddr_addr as *mut u8,
@@ -35,7 +26,7 @@ impl Port {
         }
     }
 
-    /// Sets the direction of a pin (input or output)
+    /// Sets the direction of a pin (input or output).
     pub fn set_pin_mode(&mut self, pin: u8, is_output: bool) {
         unsafe {
             let current = read_volatile(self.ddr);
@@ -48,7 +39,7 @@ impl Port {
         }
     }
 
-    /// Sets the output state of a pin (high or low)
+    /// Sets the output state of a pin (high or low).
     pub fn set_pin_state(&mut self, pin: u8, is_high: bool) {
         unsafe {
             let current = read_volatile(self.port);
@@ -61,7 +52,7 @@ impl Port {
         }
     }
 
-    /// Reads the input state of a pin
+    /// Reads the input state of a pin.
     pub fn read_pin(&self, pin: u8) -> bool {
         unsafe {
             let value = read_volatile(self.pin);
@@ -70,6 +61,7 @@ impl Port {
     }
 }
 
+/// Port B (ATmega328P).
 pub mod portb {
     use super::Port;
 
@@ -77,11 +69,13 @@ pub mod portb {
     const PORTB: u16 = 0x25;
     const PINB: u16 = 0x23;
 
+    /// Returns an initialized Port B handle.
     pub fn init() -> Port {
         unsafe { Port::new(DDRB, PORTB, PINB) }
     }
 }
 
+/// Port C (ATmega328P).
 pub mod portc {
     use super::Port;
 
@@ -89,11 +83,13 @@ pub mod portc {
     const PORTC: u16 = 0x28;
     const PINC: u16 = 0x26;
 
+    /// Returns an initialized Port C handle.
     pub fn init() -> Port {
         unsafe { Port::new(DDRC, PORTC, PINC) }
     }
 }
 
+/// Port D (ATmega328P).
 pub mod portd {
     use super::Port;
 
@@ -101,6 +97,7 @@ pub mod portd {
     const PORTD: u16 = 0x2b;
     const PIND: u16 = 0x29;
 
+    /// Returns an initialized Port D handle.
     pub fn init() -> Port {
         unsafe { Port::new(DDRD, PORTD, PIND) }
     }

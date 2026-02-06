@@ -4,6 +4,11 @@ version = "0.1.0"
 authors = ["dev_jeb <developer_jeb@outlook.com>"]
 edition = "2024"
 
+[dependencies]
+# Use the local avr-port crate. After publishing to crates.io, you can use:
+# avr-port = "0.1.0"
+avr-port = { path = "../avr-port" }
+
 [profile.dev]
 panic = "abort"
 debug = true

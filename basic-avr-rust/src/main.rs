@@ -1,7 +1,7 @@
 #![no_std]
 #![no_main]
 
-mod port;
+use avr_port::portb;
 
 #[panic_handler]
 pub fn panic(_panic: &core::panic::PanicInfo) -> ! {
@@ -16,7 +16,7 @@ fn busy_delay(cycles: u32) {
 
 #[unsafe(no_mangle)]
 pub extern "C" fn main() -> ! {
-    let mut port_b = port::portb::init();
+    let mut port_b = portb::init();
     port_b.set_pin_mode(0x05, true);
 
     loop {
